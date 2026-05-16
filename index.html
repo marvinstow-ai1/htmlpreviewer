@@ -5,156 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Public Clone Studio</title>
   <style>
-    :root{--bg:#0f0f0f;--surface:#161616;--surface2:#1d1d1d;--border:#2a2a2a;--text:#f1f1f1;--muted:#7a7a7a;--primary:#c8f135;--radius:14px;--danger:#ff7b7b}
+    :root{--bg:#0f0f0f;--surface:#161616;--surface2:#1d1d1d;--border:#2a2a2a;--text:#f1f1f1;--muted:#7a7a7a;--primary:#c8f135;--radius:14px}
     *{box-sizing:border-box} html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
-    .app{height:100%;display:grid;grid-template-columns:360px 1fr 420px;grid-template-rows:64px 1fr 210px;grid-template-areas:'top top top' 'left center right' 'bottom bottom bottom';gap:1px;background:var(--border)}
-    .top{grid-area:top;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em}.dot{width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 18px rgba(200,241,53,.45)}
-    .top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn,.btn2{border:1px solid var(--border);background:#111;color:var(--text);padding:10px 12px;border-radius:10px;font-size:12px;cursor:pointer;transition:.15s}.btn:hover,.btn2:hover{transform:translateY(-1px);border-color:#3b3b3b}.btn.primary{background:var(--primary);color:#111;border-color:transparent;font-weight:700}.btn.danger{border-color:#4b2a2a;color:#ffb2b2}
-    .panel{background:var(--surface);overflow:hidden;display:flex;flex-direction:column;min-height:0}
-    .left{grid-area:left;border-right:1px solid var(--border)}
-    .center{grid-area:center;border-right:1px solid var(--border)}
-    .right{grid-area:right}
-    .bottom{grid-area:bottom;border-top:1px solid var(--border)}
+    .app{height:100%;display:grid;grid-template-columns:380px 1fr 460px;grid-template-rows:64px 1fr 200px;grid-template-areas:'top top top' 'left center right' 'bottom bottom bottom';gap:1px;background:var(--border)}
+    .top,.panel{background:var(--surface)} .top{grid-area:top;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700}.dot{width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 18px rgba(200,241,53,.45)}
+    .top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--border);background:#111;color:var(--text);padding:10px 12px;border-radius:10px;font-size:12px;cursor:pointer}.btn.primary{background:var(--primary);color:#111;border-color:transparent;font-weight:700}
+    .panel{overflow:hidden;display:flex;flex-direction:column;min-height:0}.left{grid-area:left;border-right:1px solid var(--border)} .center{grid-area:center;border-right:1px solid var(--border)} .right{grid-area:right} .bottom{grid-area:bottom;border-top:1px solid var(--border)}
     .panel-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#171717,#141414)}
     .content{padding:14px;overflow:auto;min-height:0}.content::-webkit-scrollbar{width:8px}.content::-webkit-scrollbar-thumb{background:#303030;border-radius:8px}
     .field{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.field label{font-size:12px;color:#bababa}.field input,.field textarea,.field select{width:100%;background:#101010;border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px;font-size:13px;outline:none}.field textarea{min-height:92px;resize:vertical}
-    .list{display:flex;flex-direction:column;gap:10px}.item{border:1px solid var(--border);background:#111;padding:12px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;gap:6px}.item:hover{border-color:#3a3a3a}.item b{font-size:13px}.item span{color:var(--muted);font-size:12px;line-height:1.45}
-    .stage{flex:1;min-height:0;background:#0d0d0d;position:relative}
-    iframe{width:100%;height:100%;border:0;background:white}.overlay{position:absolute;inset:0;pointer-events:none;border:2px solid transparent}.highlight{position:absolute;border:2px solid var(--primary);background:rgba(200,241,53,.12);border-radius:12px;pointer-events:none;display:none;box-shadow:0 0 0 1px rgba(200,241,53,.18)}
-    .small{font-size:12px;color:var(--muted)} .codebox{background:#0b0b0b;border:1px solid var(--border);border-radius:12px;padding:12px;white-space:pre;overflow:auto;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;line-height:1.55;min-height:100%}
     .tabs{display:flex;gap:8px;flex-wrap:wrap}.tab{padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:#111;color:#bbb;font-size:12px;cursor:pointer}.tab.active{background:rgba(200,241,53,.12);color:var(--primary);border-color:#4c5520}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mutedbox{background:#101010;border:1px solid var(--border);border-radius:12px;padding:12px}
+    .mutedbox{background:#101010;border:1px solid var(--border);border-radius:12px;padding:12px}.small{font-size:12px;color:var(--muted);line-height:1.6}
+    .stage{flex:1;min-height:0;background:#0d0d0d;position:relative} iframe{width:100%;height:100%;border:0;background:white}
+    .highlight{position:absolute;border:2px solid var(--primary);background:rgba(200,241,53,.12);border-radius:12px;pointer-events:none;display:none;box-shadow:0 0 0 1px rgba(200,241,53,.18)}
+    .codebox{background:#0b0b0b;border:1px solid var(--border);border-radius:12px;padding:12px;white-space:pre;overflow:auto;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;line-height:1.55;min-height:100%}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   </style>
 </head>
 <body>
   <div class="app">
     <div class="top">
       <div class="brand"><div class="dot"></div><div>Public Clone Studio</div></div>
-      <div class="top-actions">
-        <button class="btn" id="btnLoad">URL laden</button>
-        <button class="btn primary" id="btnExtract">Auslesen</button>
-        <button class="btn" id="btnRefresh">Preview refresh</button>
-        <button class="btn danger" id="btnClear">Reset</button>
-      </div>
+      <div class="top-actions"><button class="btn" id="btnMirror">Mirror</button><button class="btn primary" id="btnExtract">Extract</button><button class="btn" id="btnSave">Save HTML</button></div>
     </div>
-
-    <div class="panel left">
-      <div class="panel-head"><span>Workflow</span><span id="status">bereit</span></div>
-      <div class="content">
-        <div class="field"><label>Public URL</label><input id="url" placeholder="https://..." /></div>
-        <div class="field"><label>Ausgabe-Modus</label><select id="mode"><option value="clone">1:1 Clone</option><option value="button">Button/CTA extrahieren</option><option value="both">Beides</option></select></div>
-        <div class="field"><label>Selektor-Hinweis</label><textarea id="hint" placeholder="Optional: button, a.btn, .cta, etc."></textarea></div>
-        <div class="mutedbox small">Dieses Tool bleibt auf öffentliche Seiten begrenzt. Es nutzt nur sichtbare Inhalte, keine Logins, keine Formulare, keine privaten Bereiche.</div>
-        <div style="height:12px"></div>
-        <div class="tabs">
-          <div class="tab active" data-tab="overview">Overview</div>
-          <div class="tab" data-tab="extract">Extract</div>
-          <div class="tab" data-tab="export">Export</div>
-        </div>
-        <div style="height:12px"></div>
-        <div id="tabArea"></div>
-      </div>
-    </div>
-
-    <div class="panel center">
-      <div class="panel-head"><span>Live Preview</span><span class="small">lokal geladen</span></div>
-      <div class="stage"><iframe id="frame"></iframe><div class="overlay"><div class="highlight" id="hl"></div></div></div>
-    </div>
-
-    <div class="panel right">
-      <div class="panel-head"><span>Extrahierter Code</span><span class="small">HTML + CSS</span></div>
-      <div class="content"><div class="codebox" id="output">Noch nichts ausgelesen.</div></div>
-    </div>
-
-    <div class="panel bottom">
-      <div class="panel-head"><span>Projekt-Infos</span><span class="small">Setup, Export, Sicherheit</span></div>
-      <div class="content split">
-        <div class="mutedbox"><b>Start</b><div class="small" style="margin-top:8px;line-height:1.6">URL einfügen → Laden → im Preview auf ein sichtbares Element klicken → Auslesen. Das Tool extrahiert nur öffentliche Inhalte aus dem geladenen DOM.</div></div>
-        <div class="mutedbox"><b>Export</b><div class="small" style="margin-top:8px;line-height:1.6">Der Output kann direkt kopiert werden. Für 1:1-Nachbau ist der öffentliche DOM plus CSS der beste Ausgangspunkt; dynamische JS-Zustände werden nur sichtbar, wenn sie im geladenen Inhalt vorhanden sind.</div></div>
-      </div>
-    </div>
+    <div class="panel left"><div class="panel-head"><span>Mirror Setup</span><span id="status">bereit</span></div><div class="content"><div class="field"><label>Public URL</label><input id="url" placeholder="https://..." /></div><div class="field"><label>Modus</label><select id="mode"><option value="button">Button/CTA</option><option value="clone">Whole page snapshot</option></select></div><div class="field"><label>Hinweis</label><textarea id="hint" placeholder="Optional: button, a.btn, .cta etc."></textarea></div><div class="mutedbox"><div class="small">Ablauf: URL eingeben → Mirror → die lokale Kopie wird in dein eigenes Interface geladen → du klickst ein Element → Extract erzeugt HTML/CSS.</div></div><div style="height:12px"></div><div class="tabs"><div class="tab active" data-tab="overview">Overview</div><div class="tab" data-tab="extract">Extract</div><div class="tab" data-tab="export">Export</div></div><div style="height:12px"></div><div id="tabArea"></div></div></div>
+    <div class="panel center"><div class="panel-head"><span>Local Mirror Preview</span><span class="small">same app</span></div><div class="stage"><iframe id="frame"></iframe><div class="highlight" id="hl"></div></div></div>
+    <div class="panel right"><div class="panel-head"><span>Output</span><span class="small">HTML + CSS</span></div><div class="content"><div class="codebox" id="output">Noch nichts gespiegelt.</div></div></div>
+    <div class="panel bottom"><div class="panel-head"><span>Notes</span><span class="small">public only</span></div><div class="content split"><div class="mutedbox"><b>Local mirror</b><div class="small" style="margin-top:8px">Die App lädt die öffentliche Seite serverseitig im Electron-Prozess und schreibt eine lokale HTML-Kopie. Dadurch kannst du die Inhalte im eigenen Kontext weiterverarbeiten.</div></div><div class="mutedbox"><b>Safety</b><div class="small" style="margin-top:8px">Keine Logins, keine Formulare, keine privaten Bereiche. Bei Cross-Origin-Limits zeigt die App eine klare Fehlermeldung statt still zu scheitern.</div></div></div></div>
   </div>
-
 <script>
-const frame = document.getElementById('frame');
-const out = document.getElementById('output');
-const statusEl = document.getElementById('status');
-const hl = document.getElementById('hl');
-let currentDoc = null;
-let selectedEl = null;
-let currentTab = 'overview';
-
+const frame=document.getElementById('frame'),out=document.getElementById('output'),hl=document.getElementById('hl'),statusEl=document.getElementById('status');
+let currentDoc=null,selectedEl=null,currentTab='overview';
 function setStatus(t){statusEl.textContent=t}
-function safeUrl(u){try{const x=new URL(u); return (x.protocol==='http:'||x.protocol==='https:') ? x.toString() : null}catch{return null}}
-function abs(u, base){try{return new URL(u, base).toString()}catch{return null}}
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
-function getComputedSnippet(el){const cs=getComputedStyle(el); return {
-  display: cs.display, position: cs.position, padding: `${cs.paddingTop} ${cs.paddingRight} ${cs.paddingBottom} ${cs.paddingLeft}`,
-  margin: `${cs.marginTop} ${cs.marginRight} ${cs.marginBottom} ${cs.marginLeft}`, borderRadius: cs.borderRadius,
-  border: `${cs.borderTopWidth} ${cs.borderTopStyle} ${cs.borderTopColor}`, background: cs.backgroundColor, color: cs.color,
-  fontSize: cs.fontSize, fontWeight: cs.fontWeight, lineHeight: cs.lineHeight, boxShadow: cs.boxShadow, transition: cs.transition
-};}
-
-async function loadUrl(){
-  const url = safeUrl(document.getElementById('url').value.trim());
-  if(!url) return setStatus('nur http/https');
-  setStatus('lade...');
-  frame.src = url;
-  frame.onload = () => {
-    try{
-      currentDoc = frame.contentDocument || frame.contentWindow.document;
-      currentDoc.body.style.cursor = 'crosshair';
-      currentDoc.addEventListener('click', onClick, true);
-      setStatus('geladen');
-      renderTab();
-    }catch(e){setStatus('cross-origin'); out.textContent = 'Diese Seite blockiert direkten DOM-Zugriff im iframe. Für volle Extraktion brauchst du eine public Seite, die den Zugriff erlaubt, oder den Scraper-Modus mit lokal gespiegelt Seiten.'}
-  };
-}
-
-function refreshPreview(){ if(frame.src) frame.src = frame.src; }
-function resetAll(){ document.getElementById('url').value=''; document.getElementById('hint').value=''; out.textContent='Noch nichts ausgelesen.'; hl.style.display='none'; selectedEl=null; setStatus('bereit'); }
-function onClick(e){ e.preventDefault(); e.stopPropagation(); selectedEl = e.target; const r = selectedEl.getBoundingClientRect(); const fr = frame.getBoundingClientRect(); hl.style.display='block'; hl.style.left = (r.left + fr.left) + 'px'; hl.style.top = (r.top + fr.top) + 'px'; hl.style.width = r.width + 'px'; hl.style.height = r.height + 'px'; renderExtract(); }
-
-function selectorOf(el){ if(!el) return ''; if(el.id) return '#'+el.id; const cls = (el.className && String(el.className).trim()) ? '.'+String(el.className).trim().split(/\s+/).slice(0,3).join('.') : ''; return el.tagName.toLowerCase()+cls; }
-function renderExtract(){ if(!selectedEl) return; const mode=document.getElementById('mode').value; const tag = selectedEl.tagName.toLowerCase(); const cls = selectedEl.className && String(selectedEl.className).trim() ? '.'+String(selectedEl.className).trim().split(/\s+/).join('.') : ''; const html = selectedEl.outerHTML; const s = getComputedSnippet(selectedEl); const css = `${tag}${cls} {
+function selectorOf(el){ if(!el) return ''; if(el.id) return '#'+el.id; const cls=(el.className&&String(el.className).trim())?'.'+String(el.className).trim().split(/\s+/).slice(0,3).join('.'):''; return el.tagName.toLowerCase()+cls; }
+function cs(el){const s=getComputedStyle(el); return `
+${selectorOf(el)} {
   display: ${s.display};
   position: ${s.position};
-  padding: ${s.padding};
-  margin: ${s.margin};
+  padding: ${s.paddingTop} ${s.paddingRight} ${s.paddingBottom} ${s.paddingLeft};
+  margin: ${s.marginTop} ${s.marginRight} ${s.marginBottom} ${s.marginLeft};
   border-radius: ${s.borderRadius};
-  border: ${s.border};
-  background: ${s.background};
+  border: ${s.borderTopWidth} ${s.borderTopStyle} ${s.borderTopColor};
+  background: ${s.backgroundColor};
   color: ${s.color};
   font-size: ${s.fontSize};
   font-weight: ${s.fontWeight};
   line-height: ${s.lineHeight};
-  box-shadow: ${s.boxShadow};
   transition: ${s.transition};
-}`; const hint = document.getElementById('hint').value.trim(); out.textContent = (mode==='button' || mode==='both') ? `${html}
-
-<style>
-${css}
-</style>
-
-/* selector: ${selectorOf(selectedEl)} */
-${hint ? '/* hint: '+hint+' */' : ''}` : `${currentDoc.documentElement.outerHTML}`; renderTab(); }
-
-function renderTab(){
-  const tabs = [...document.querySelectorAll('.tab')]; tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===currentTab));
-  const area = document.getElementById('tabArea');
-  if(currentTab==='overview') area.innerHTML = `<div class="mutedbox"><b>Was dieses Tool macht</b><div class="small" style="margin-top:8px;line-height:1.6">Es lädt eine öffentliche Website in einem iframe, erlaubt dir auf sichtbare Elemente zu klicken und generiert daraus einen HTML/CSS-Block. Perfekt für Buttons, CTAs und kleine UI-Blöcke.</div></div>`;
-  if(currentTab==='extract') area.innerHTML = `<div class="mutedbox"><b>Extraktion</b><div class="small" style="margin-top:8px;line-height:1.6">Klick auf ein Element im Preview. Das Element wird markiert und rechts als Code ausgegeben. Bei cross-origin Seiten kann der Browser den Zugriff blockieren.</div></div>`;
-  if(currentTab==='export') area.innerHTML = `<div class="mutedbox"><b>Export</b><div class="small" style="margin-top:8px;line-height:1.6">Kopiere den rechten Codeblock direkt in dein Projekt. Für 1:1-Nachbau ist das Original-HTML plus berechnete CSS-Styles die beste Basis.</div></div>`;
+  box-shadow: ${s.boxShadow};
 }
+`}
+function renderTab(){const area=document.getElementById('tabArea');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===currentTab)); if(currentTab==='overview') area.innerHTML='<div class="mutedbox"><b>Overview</b><div class="small" style="margin-top:8px">Diese Version spiegelt öffentliche Seiten lokal und gibt dir ein eingebettetes Interface. Du bleibst in einem Fenster und kannst die extrahierten Blöcke direkt weiterkopieren.</div></div>'; if(currentTab==='extract') area.innerHTML='<div class="mutedbox"><b>Extract</b><div class="small" style="margin-top:8px">Nach Mirror auf sichtbare Elemente klicken. Der Output kombiniert HTML mit berechneten CSS-Properties als Basis für Buttons und kleine UI-Sektionen.</div></div>'; if(currentTab==='export') area.innerHTML='<div class="mutedbox"><b>Export</b><div class="small" style="margin-top:8px">Kopiere den Code direkt aus dem rechten Panel oder speichere ihn als Datei. Für echte 1:1-Ergebnisse ist der lokal gespiegelte DOM die beste Grundlage.</div></div>'}
+async function mirror(){ const url=document.getElementById('url').value.trim(); if(!url) return setStatus('url fehlt'); setStatus('mirroring...'); const res=await window.api.mirrorUrl(url); if(!res.ok){ out.textContent=res.error; setStatus('error'); return; } frame.src='file://'+res.localPath.replace(/\/g,'/'); setStatus('mirrored'); }
+function extract(){ if(!selectedEl){ setStatus('klick ein element'); return; } const html=selectedEl.outerHTML; const mode=document.getElementById('mode').value; const css=cs(selectedEl); const hint=document.getElementById('hint').value.trim(); out.textContent = mode==='clone' ? currentDoc.documentElement.outerHTML : `${html}
 
-document.querySelectorAll('.tab').forEach(el=>el.addEventListener('click',()=>{currentTab=el.dataset.tab;renderTab()}));
-document.getElementById('btnLoad').onclick = loadUrl;
-document.getElementById('btnExtract').onclick = renderExtract;
-document.getElementById('btnRefresh').onclick = refreshPreview;
-document.getElementById('btnClear').onclick = resetAll;
-window.addEventListener('keydown', e => { if((e.ctrlKey||e.metaKey) && e.key==='Enter') renderExtract(); });
-renderTab();
+<style>${css}</style>${hint ? `
+
+/* hint: ${esc(hint)} */` : ''}`; setStatus('extracted'); }
+function save(){window.api.saveExtract(out.textContent).then(r=>setStatus(r.ok?'saved':'save error'))}
+function onClick(e){ e.preventDefault(); e.stopPropagation(); selectedEl=e.target; const r=selectedEl.getBoundingClientRect(); const fr=frame.getBoundingClientRect(); hl.style.display='block'; hl.style.left=(r.left+fr.left)+'px'; hl.style.top=(r.top+fr.top)+'px'; hl.style.width=r.width+'px'; hl.style.height=r.height+'px'; extract(); }
+frame.addEventListener('load',()=>{ try{ currentDoc=frame.contentDocument || frame.contentWindow.document; currentDoc.body.style.cursor='crosshair'; currentDoc.addEventListener('click', onClick, true); setStatus('ready'); } catch(e){ currentDoc=null; setStatus('iframe blocked'); out.textContent='Diese Quelle blockiert iframe-Zugriff. Nutze eine andere öffentliche Seite oder denselben lokal gespiegelteten Inhalt.'; } });
+document.getElementById('btnMirror').onclick=mirror; document.getElementById('btnExtract').onclick=extract; document.getElementById('btnSave').onclick=save; document.querySelectorAll('.tab').forEach(el=>el.addEventListener('click',()=>{currentTab=el.dataset.tab;renderTab()})); renderTab();
 </script>
 </body>
 </html>
