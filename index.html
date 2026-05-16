@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HTML Preview Tool</title>
+  <style>
+    :root {
+      --primary: #C8F135;
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface2: #222222;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --text-muted: #666666;
+      --radius: 10px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* --- HEADER --- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #0f0f0f;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: #444; }
+
+    /* --- MAIN LAYOUT --- */
+    .workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      gap: 0;
+    }
+
+    /* --- EDITOR PANE --- */
+    .editor-pane {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+
+    .pane-header {
+      padding: 10px 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .char-count {
+      font-size: 10px;
+      color: #444;
+    }
+
+    textarea {
+      flex: 1;
+      background: var(--surface2);
+      color: #d4d4d4;
+      border: none;
+      padding: 16px;
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+      overflow-y: auto;
+    }
+    textarea::placeholder { color: #3a3a3a; }
+    textarea::-webkit-scrollbar { width: 6px; }
+    textarea::-webkit-scrollbar-track { background: transparent; }
+    textarea::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+    /* --- PREVIEW PANE --- */
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #444;
+      transition: background 0.3s;
+    }
+    .status-dot.updated { background: var(--primary); }
+
+    iframe {
+      flex: 1;
+      border: none;
+      background: #ffffff;
+    }
+
+    /* --- EMPTY STATE --- */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .empty-icon {
+      font-size: 32px;
+      opacity: 0.3;
+    }
+
+    /* --- TOAST --- */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="logo">⬡ Preview Tool</span>
+    <div class="header-actions">
+      <button class="btn-ghost" onclick="clearAll()">Leeren</button>
+      <button class="btn-ghost" onclick="copyCode()">Kopieren</button>
+      <button class="btn" onclick="updatePreview()">▶ Aktualisieren</button>
+    </div>
+  </header>
+
+  <div class="workspace">
+
+    <div class="editor-pane">
+      <div class="pane-header">
+        <span>HTML Code</span>
+        <span class="char-count" id="charCount">0 Zeichen</span>
+      </div>
+      <textarea
+        id="codeInput"
+        placeholder="HTML Code hier einfügen..."
+        spellcheck="false"
+        oninput="updateCharCount()"
+        onkeydown="handleTab(event)"
+      ></textarea>
+    </div>
+
+    <div class="preview-pane">
+      <div class="pane-header">
+        <span>Preview</span>
+        <div class="preview-status">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Bereit</span>
+        </div>
+      </div>
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">◻</div>
+        <span>Code einfügen & Aktualisieren drücken</span>
+      </div>
+      <iframe id="preview" style="display:none;"></iframe>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function updatePreview() {
+      const code = document.getElementById('codeInput').value.trim();
+      const iframe = document.getElementById('preview');
+      const empty = document.getElementById('emptyState');
+      const dot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+
+      if (!code) {
+        showToast('Kein Code vorhanden.');
+        return;
+      }
+
+      empty.style.display = 'none';
+      iframe.style.display = 'block';
+
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(code);
+      doc.close();
+
+      dot.classList.add('updated');
+      statusText.textContent = 'Aktualisiert';
+      setTimeout(() => {
+        dot.classList.remove('updated');
+        statusText.textContent = 'Bereit';
+      }, 2000);
+    }
+
+    function clearAll() {
+      document.getElementById('codeInput').value = '';
+      const iframe = document.getElementById('preview');
+      iframe.style.display = 'none';
+      document.getElementById('emptyState').style.display = 'flex';
+      updateCharCount();
+      showToast('Geleert.');
+    }
+
+    function copyCode() {
+      const code = document.getElementById('codeInput').value;
+      if (!code) { showToast('Nichts zum Kopieren.'); return; }
+      navigator.clipboard.writeText(code).then(() => showToast('Code kopiert ✓'));
+    }
+
+    function updateCharCount() {
+      const len = document.getElementById('codeInput').value.length;
+      document.getElementById('charCount').textContent = len.toLocaleString('de') + ' Zeichen';
+    }
+
+    function handleTab(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const ta = e.target;
+        const start = ta.selectionStart;
+        ta.value = ta.value.substring(0, start) + '  ' + ta.value.substring(ta.selectionEnd);
+        ta.selectionStart = ta.selectionEnd = start + 2;
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    // Shortcut: Ctrl+Enter = Aktualisieren
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') updatePreview();
+    });
+  </script>
+
+</body>
+</html>
